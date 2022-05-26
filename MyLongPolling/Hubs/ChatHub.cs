@@ -40,11 +40,12 @@ public class ChatHub : Hub
         var user = db.Users
             .Include(x => x.Connections)
             .FirstOrDefault(x => x.Token.Equals(_token.Substring(7)));
+        var tasks = new List<Task>();
         foreach (var connection in user.Connections)
         {
-            await Clients.Client(connection.ConnectionID)
-                .SendAsync("ReceiveCallPhone", phone);
+            tasks.Add(Clients.Client(connection.ConnectionID).SendAsync("ReceiveCallPhone", phone));
         }
+        Task.WhenAll(tasks);
     }
 
     
