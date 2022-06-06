@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\dana\\RiderProjects\\MyLongPolling\\MyLongPolling\\MyLongPolling.csproj": {}
+    "C:\\Users\\dana\\RiderProjects\\CallCenter.API\\MyLongPolling\\MyLongPolling.csproj": {}
   },
   "projects": {
-    "C:\\Users\\dana\\RiderProjects\\MyLongPolling\\MyLongPolling\\MyLongPolling.csproj": {
+    "C:\\Users\\dana\\RiderProjects\\CallCenter.API\\MyLongPolling\\MyLongPolling.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\dana\\RiderProjects\\MyLongPolling\\MyLongPolling\\MyLongPolling.csproj",
+        "projectUniqueName": "C:\\Users\\dana\\RiderProjects\\CallCenter.API\\MyLongPolling\\MyLongPolling.csproj",
         "projectName": "MyLongPolling",
-        "projectPath": "C:\\Users\\dana\\RiderProjects\\MyLongPolling\\MyLongPolling\\MyLongPolling.csproj",
+        "projectPath": "C:\\Users\\dana\\RiderProjects\\CallCenter.API\\MyLongPolling\\MyLongPolling.csproj",
         "packagesPath": "C:\\Users\\dana\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\dana\\RiderProjects\\MyLongPolling\\MyLongPolling\\obj\\",
+        "outputPath": "C:\\Users\\dana\\RiderProjects\\CallCenter.API\\MyLongPolling\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\dana\\AppData\\Roaming\\NuGet\\NuGet.Config",
