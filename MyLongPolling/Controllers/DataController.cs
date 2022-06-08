@@ -8,7 +8,7 @@ namespace MyLongPolling.Controllers;
 [Route("api/[controller]")]
 public class DataController : Controller
 {
-    private ApplicationContext _db;
+    private readonly ApplicationContext _db;
     public DataController(ApplicationContext context)
     {
         _db = context;
@@ -117,14 +117,10 @@ public class DataController : Controller
     [Route("GetAllClients")] 
     public async Task<List<Client>> GetAllClients()
     {
-        var clients = _db.Clients
+        var clients = await _db.Clients
             .Include(x => x.Events)
-            .ToList();
+            .ToListAsync();
         return clients;
     }
 
-    /*public async Task<Call> GetLastCall()
-    {
-        
-    }*/
 }

@@ -16,11 +16,16 @@ using MyLongPolling.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 string connection = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connection));
+builder.Services.AddTransient<ApplicationContext>().AddDbContext<ApplicationContext>(
+    options => options.UseNpgsql(connection),
+    ServiceLifetime.Transient);
+
 
 builder.WebHost.UseUrls("http://localhost:5000");
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
+
 
 builder.Services.AddAuthentication(opt =>
     {
