@@ -9,7 +9,7 @@ public class ChatHub : Hub
 {
     private readonly ApplicationContext _db;
     
-    string connection = "Server=localhost;Port=5432;Database=CallCenter;User Id=postgres;Password=123";
+    string connectionString = "Server=localhost;Port=5432;Database=CallCenter;User Id=postgres;Password=123";
    
     
     
@@ -104,17 +104,54 @@ public class ChatHub : Hub
         await Task.WhenAll(tasks);
     }
 
+    public async Task TerminateConnection(Connection connection)
+    {
+        var connectionId = Context.ConnectionId;
+        if(connection.ConnectionID != connectionId)
+            Clients.Client(connection.ConnectionID).SendAsync("ReceiveTerminateConnection");
+    }
+    
+    public async Task TerminateAllConnection()
+    {
+        var context = Context.GetHttpContext();
+        var contextOptions = new DbContextOptionsBuilder<ApplicationContext>()
+            .UseNpgsql(connectionString)
+            .Options;
+        
+        using (ApplicationContext db = new ApplicationContext(contextOptions))
+        {
+            string _token = context.Request.Headers["Authorization"];
+            var user = db.Users
+                .Include(x => x.Connections)
+                .FirstOrDefault(x => x.Token.Equals(_token.Substring(7)));
+
+            foreach (var item in user.Connections)
+            { 
+                TerminateConnection(item);
+            }
+        }
+
+       
+    }
+
     
     public override Task OnConnectedAsync()
     {
        
         var contextOptions = new DbContextOptionsBuilder<ApplicationContext>()
-            .UseNpgsql(connection)
+            .UseNpgsql(connectionString)
             .Options;
+        var context = Context.GetHttpContext();
+       
+        
         using (ApplicationContext db = new ApplicationContext(contextOptions))
         {
-            var context = Context.GetHttpContext();
+          
             string _token = context.Request.Headers["Authorization"];
+            
+            string _host_name = context.Request.Headers["Hostname"];
+
+          
             var user = db.Users
                 .Include(x => x.Connections)
                 .FirstOrDefault(x => x.Token.Equals(_token.Substring(7)));
@@ -124,37 +161,36 @@ public class ChatHub : Hub
             {
                 Title = "вошел в чат", Created = DateTime.Now
             });
-        
-      
+            
+            Connection connection = new Connection()
+            {
+                ConnectionID = Context.ConnectionId,
+                HostName = _host_name
+            };
+            
             foreach (var userConnection in user.Connections)
             {
-                Clients.Client(userConnection.ConnectionID)
-                    .SendAsync("ReceiveConnected", Context.ConnectionId);
+                Clients.Client(Context.ConnectionId)
+                    .SendAsync("ReceiveConnected", userConnection);
             }
             
-            user.Connections.Add(new Connection()
-            {
-                ConnectionID = Context.ConnectionId
-            });
+            user.Connections.Add(connection);
             db.Users.Update(user);
             db.SaveChanges();
             
             foreach (var userConnection in user.Connections)
             {
-                Clients.Client(Context.ConnectionId)
-                    .SendAsync("ReceiveConnected", userConnection.ConnectionID);
+                Clients.Client(userConnection.ConnectionID)
+                    .SendAsync("ReceiveConnected", connection);
             }
-
-
         }
-       
         return base.OnConnectedAsync();
     }
 
     public override Task OnDisconnectedAsync(Exception exception)
     {
         var contextOptions = new DbContextOptionsBuilder<ApplicationContext>()
-            .UseNpgsql(this.connection)
+            .UseNpgsql(connectionString)
             .Options;
         using (ApplicationContext db = new ApplicationContext(contextOptions))
         {

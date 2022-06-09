@@ -33,6 +33,8 @@ public class AccountController : Controller
                     Login = model.Login,
                     Name = model.Name,
                     Password = model.Password,
+                    Lastname = model.Lastname,
+                    Surname = model.Surname,
                     Connections = new List<Connection>(),
                     Token = ""
                 };
@@ -112,8 +114,14 @@ public class AccountController : Controller
            .FirstOrDefault(x => x.Token.Equals(_token));
        return new RegistrationModel()
        {
+           Id = user.Id,
            Login = user.Login,
            Name = user.Name,
+           Lastname = user.Lastname,
+           Surname = user.Surname,
+           CountBlocked = user.CountBlocked,
+           CountCalls = user.CountCalls,
+           CountTransferred = user.CountTransferred,
            Password = ""
        };
    }

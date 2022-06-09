@@ -123,4 +123,51 @@ public class DataController : Controller
         return clients;
     }
 
+    
+    [Route("UpdateUser")] 
+    public async Task<Boolean> UpdateUser([FromBody] User user)
+    {
+        try
+        {
+            var oldUser = _db.Users.FirstOrDefault(x => x.Id == user.Id);
+            oldUser.Name = user.Name;
+            oldUser.Surname = user.Surname;
+            oldUser.Lastname = user.Lastname;
+            oldUser.Login = user.Login;
+            oldUser.CountBlocked = user.CountBlocked;
+            oldUser.CountCalls = user.CountCalls;
+            oldUser.CountTransferred = user.CountTransferred;
+            _db.Users.Update(oldUser);
+            await _db.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            
+        }
+
+        return false;
+    }
+    
+    [Route("UpdateUserCountFields")] 
+    public async Task<Boolean> UpdateUserCountFields([FromBody] User user)
+    {
+        try
+        {
+            var oldUser = _db.Users.FirstOrDefault(x => x.Id == user.Id);
+            oldUser.CountBlocked = user.CountBlocked;
+            oldUser.CountCalls = user.CountCalls;
+            oldUser.CountTransferred = user.CountTransferred;
+            _db.Users.Update(oldUser);
+            await _db.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            
+        }
+
+        return false;
+    }
+
 }
